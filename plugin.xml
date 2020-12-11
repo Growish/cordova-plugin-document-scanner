@@ -50,7 +50,7 @@
              <source url="https://github.com/CocoaPods/Specs.git"/>
          </config>
          <pods use-frameworks="true">
-             <pod name="WeScan" spec="~> 0.9" />
+             <pod name="WeScan" spec=">= 0.9" />
          </pods>
     </podspec>
     

@@ -22,12 +22,14 @@ import WeScan
     func imageScannerController(_ scanner: ImageScannerController, didFinishScanningWithResults results: ImageScannerResults) {
         // The user successfully scanned an image, which is available in the ImageScannerResults
         // You are responsible for dismissing the ImageScannerController
-        print("success")
-        print(results.scannedImage)
+        
+        let scaledImage = results.croppedScan.image.scalePreservingAspectRatio(
+            targetSize: CGSize(width: 200, height: 200)
+        )
         
         //Now use image to create into NSData format
-        let imageData:NSData = UIImagePNGRepresentation(results.scannedImage)! as NSData
-        let strBase64 = imageData.base64EncodedString(options: .lineLength64Characters)
+        let imageData:NSData = UIImagePNGRepresentation(scaledImage)! as NSData
+        let strBase64 = imageData.base64EncodedString()
         
         let pluginResult = CDVPluginResult(status: CDVCommandStatus_OK, messageAs: strBase64)
         
@@ -72,12 +74,44 @@ import WeScan
     
 }
 
+extension UIImage {
+    func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
+        // Determine the scale factor that preserves aspect ratio
+        let widthRatio = targetSize.width / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        let scaleFactor = min(widthRatio, heightRatio)
+        
+        // Compute the new image size that preserves aspect ratio
+        let scaledImageSize = CGSize(
+            width: size.width * scaleFactor,
+            height: size.height * scaleFactor
+        )
+
+        // Draw and return the resized UIImage
+        let renderer = UIGraphicsImageRenderer(
+            size: scaledImageSize
+        )
+
+        let scaledImage = renderer.image { _ in
+            self.draw(in: CGRect(
+                origin: .zero,
+                size: scaledImageSize
+            ))
+        }
+        
+        return scaledImage
+    }
+}
+
+
 extension UIApplication {
     /// The top most view controller
     static var topMostViewController: UIViewController? {
         return UIApplication.shared.keyWindow?.rootViewController?.visibleViewController
     }
 }
+
 
 extension UIViewController {
     /// The visible view controller from a given view controller

@@ -13,7 +13,6 @@ import WeScan
     
     var _command: CDVInvokedUrlCommand!
     
-    
     func imageScannerController(_ scanner: ImageScannerController, didFailWithError error: Error) {
         // You are responsible for carefully handling the error
         print(error)
@@ -23,8 +22,10 @@ import WeScan
         // The user successfully scanned an image, which is available in the ImageScannerResults
         // You are responsible for dismissing the ImageScannerController
         
+        let imageQuality = _command.arguments[2] as! Int
+        
         let scaledImage = results.croppedScan.image.scalePreservingAspectRatio(
-            targetSize: CGSize(width: 200, height: 200)
+            targetSize: CGSize(width: 200 * imageQuality, height: 200 * imageQuality)
         )
         
         //Now use image to create into NSData format

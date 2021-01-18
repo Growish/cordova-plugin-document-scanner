@@ -25,7 +25,7 @@ import WeScan
         let imageQuality = _command.arguments[2] as! Int
         
         let scaledImage = results.croppedScan.image.scalePreservingAspectRatio(
-            targetSize: CGSize(width: 200 * imageQuality, height: 200 * imageQuality)
+            targetSize: CGSize(width: 500 / imageQuality, height: 500 / imageQuality)
         )
         
         //Now use image to create into NSData format
